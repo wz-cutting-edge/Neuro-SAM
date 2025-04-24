@@ -193,7 +193,7 @@ class HybridSentimentModel(torch.nn.Module, PyTorchModelHubMixin):
 # Generate test data for topic distribution
 dtm = vectorizer.transform([text])
 topic_dist_raw = lda_model.transform(dtm)
-print(f"Topic distribution shape: {topic_dist_raw.shape}")  # Debug output
+print(f"Topic distribution shape: {topic_dist_raw.shape}")
 
 # Adapt 25-topic distributions to work with a model expecting 15 and 25 topics
 def adapt_topic_dist(dist, target_size):
@@ -208,8 +208,8 @@ def adapt_topic_dist(dist, target_size):
     return result
 
 # Create adapted topic distributions
-topic_dist = adapt_topic_dist(topic_dist_raw, 15)  # First encoder expects 15 topics
-topic_dist_25 = adapt_topic_dist(topic_dist_raw, 25)  # Second encoder expects 25 topics
+topic_dist = adapt_topic_dist(topic_dist_raw, 15)
+topic_dist_25 = adapt_topic_dist(topic_dist_raw, 25)
 
 # If the LDA model has fewer than 25 topics, we need to pad the second distribution
 if topic_dist_raw.shape[1] < 25:
@@ -222,8 +222,8 @@ if topic_dist_raw.shape[1] < 25:
 model = HybridSentimentModel.from_pretrained(
     repo_id, 
     token=token,
-    lda_topics=15,        # First encoder expects 15 topics
-    lda_topics_25=25      # Second encoder expects 25 topics
+    lda_topics=15,     
+    lda_topics_25=25  
 )
 model.eval()
 
