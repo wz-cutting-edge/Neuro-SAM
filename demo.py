@@ -6,9 +6,6 @@ from huggingface_hub import hf_hub_download, login, PyTorchModelHubMixin
 import os
 from dotenv import load_dotenv
 
-# Process test text
-text = "I heard that that the president of greenland has a neice."
-
 # Load environment variables
 load_dotenv()
 token = os.getenv('HF_READ')
@@ -29,11 +26,6 @@ with open(vectorizer_path, 'rb') as f:
 with open(lda_model_path, 'rb') as f:
     lda_model = pickle.load(f)
 
-# Get the actual topic dimensions from the LDA model
-lda_topics_dim = lda_model.n_components
-print(f"LDA model outputs {lda_topics_dim} topics")
-
-# Define component modules
 class MultiGranularityTopicModule(nn.Module):
     def __init__(self, lda_topics=15, lda_topics_25=25, hidden_size=768, dropout_rate=0.1):
         super().__init__()
@@ -190,64 +182,10 @@ class HybridSentimentModel(torch.nn.Module, PyTorchModelHubMixin):
         logits = self.classifier(fused_features)
         return logits
 
-# Generate test data for topic distribution
-dtm = vectorizer.transform([text])
-topic_dist_raw = lda_model.transform(dtm)
-print(f"Topic distribution shape: {topic_dist_raw.shape}")
-
-# Adapt 25-topic distributions to work with a model expecting 15 and 25 topics
 def adapt_topic_dist(dist, target_size):
     batch_size = dist.shape[0]
     result = torch.zeros((batch_size, target_size), dtype=torch.float)
-    # Copy as many topics as possible (either all source topics or up to target size)
     topics_to_copy = min(dist.shape[1], target_size)
     result[:, :topics_to_copy] = torch.tensor(dist[:, :topics_to_copy], dtype=torch.float)
-    
-    # Renormalize to ensure it sums to 1
     result = result / torch.sum(result, dim=1, keepdim=True)
     return result
-
-# Create adapted topic distributions
-topic_dist = adapt_topic_dist(topic_dist_raw, 15)
-topic_dist_25 = adapt_topic_dist(topic_dist_raw, 25)
-
-# If the LDA model has fewer than 25 topics, we need to pad the second distribution
-if topic_dist_raw.shape[1] < 25:
-    # Pad with zeros and renormalize
-    topic_dist_25 = torch.zeros((1, 25), dtype=torch.float)
-    topic_dist_25[:, :topic_dist_raw.shape[1]] = torch.tensor(topic_dist_raw, dtype=torch.float)
-    topic_dist_25 = topic_dist_25 / torch.sum(topic_dist_25, dim=1, keepdim=True)
-
-# Load the model with CORRECT topic dimensions matching pre-trained model
-model = HybridSentimentModel.from_pretrained(
-    repo_id, 
-    token=token,
-    lda_topics=15,     
-    lda_topics_25=25  
-)
-model.eval()
-
-# Tokenize for transformer
-inputs = tokenizer(text, return_tensors="pt", padding=True, truncation=True, max_length=128)
-
-# Print shapes for verification
-print(f"Input shape: {inputs['input_ids'].shape}")
-print(f"Adapted topic distribution shape: {topic_dist.shape}")
-print(f"Adapted topic distribution 25 shape: {topic_dist_25.shape}")
-
-# Run inference
-with torch.no_grad():
-    outputs = model(
-        input_ids=inputs["input_ids"],
-        attention_mask=inputs["attention_mask"],
-        topic_dist=topic_dist,
-        topic_dist_25=topic_dist_25
-    )
-    probabilities = torch.softmax(outputs, dim=1)
-    prediction = torch.argmax(probabilities, dim=1).item()
-
-# Map class labels
-sentiment_labels = ["negative", "neutral", "positive"]
-print(f"Text: {text}")
-print(f"Predicted sentiment: {sentiment_labels[prediction]}")
-print(f"Confidence: {probabilities[0][prediction].item():.4f}")
