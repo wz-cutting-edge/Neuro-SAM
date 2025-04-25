@@ -22,7 +22,7 @@ Follow these steps to set up the environment and install the necessary dependenc
    Clone this repository to your local machine or download the provided code files.
 
    ```bash
-   git clone 
+   git clone https://github.com/wz-cutting-edge/Neuro-SAM.git
    cd 
    ```
 
