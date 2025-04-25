@@ -6,8 +6,8 @@
     font-weight: 400;
 
     color-scheme: light dark;
-    color: #e1e5ee;
-    background-color: #767b91;
+    color: #FFFFFF;
+    background-color: #C4A381;
 
     font-synthesis: none;
     text-rendering: optimizeLegibility;
@@ -34,7 +34,6 @@ body {
 h1 {
     font-size: 3.2em;
     line-height: 1.1;
-    color: #e1e5ee;
 }
 
 a {
@@ -43,7 +42,7 @@ a {
     text-decoration: inherit;
 }
 a:hover {
-    color: #535bf2;
+    color: #BBD686;
 }
 
 button {
@@ -58,7 +57,7 @@ button {
     transition: border-color 0.25s;
 }
 button:hover {
-    border-color: #646cff;
+    border-color: #BBD686;
 }
 button:focus,
 button:focus-visible {

@@ -40,10 +40,15 @@ def predict():
             probabilities = torch.softmax(outputs, dim=1)
             prediction = torch.argmax(probabilities, dim=1).item()
 
-        sentiment_labels = ["negative", "neutral", "positive"]
+        sentiment_labels = ["Negative", "Neutral", "Positive"]
+        confidence_scores = {
+            label: round(probabilities[0][idx].item() * 100, 2)
+            for idx, label in enumerate(sentiment_labels)
+        }
+
         return jsonify({
             "sentiment": sentiment_labels[prediction],
-            "confidence": probabilities[0][prediction].item()
+            "confidence_scores": confidence_scores
         })
         
     except Exception as e:

@@ -1,59 +1,67 @@
 /* Use this file for layout/styling of specific sections/componenents */
 
-.input-box {
-    border: 2px solid #f7c59f;
-    border-radius: 8px;
-    padding: 1rem;
-    margin: 1rem auto;
-    max-width: 400px;
-    text-align: left;
-}
-.input-box label {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-weight: bold;
-}
-.input-box input {
-    width: 90%;
-    padding: 0.5rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 1rem;
-}
-.input-box p {
-    margin-top: 0.5rem;
-    font-size: 0.9rem;
-    color: #333;
-}
-
 .app-header {
     background-color: #232729;
     color: white;
+    height: 100px;
     padding: 1rem;
+    gap: 1rem;
     text-align: center;
-    flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 1rem;
 }
 .app-header img{
     width: 100px;
     height: auto;
 }
 
+.app-main {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.input-box {
+    background-color: #B2675E;
+    border: 2px solid #975149;
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1rem auto;
+    width: 25%;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+}
+.input-box label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+}
+.input-box textarea {
+    padding: 0.5rem;
+    border-radius: 4px;
+    border: 3px solid #975149;
+    resize: none;
+    margin-bottom: 10px;
+}
+
+.confidence-scores ul {
+    list-style: none;
+    padding: 0;
+    margin: 10px 0;
+}
+.confidence-scores li {
+    margin: 5px 0;
+    padding: 5px;
+    border-radius: 4px;
+}
+
 .app-footer {
-    background-color: #252729;
-    color: #767B91;
+    background-color: #232729;
     padding: 1rem;
     text-align: center;
     font-size: 0.9rem;
-    flex-shrink: 0;
-}
-
-main {
-    flex-grow: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    margin-top: 145px;
 }
